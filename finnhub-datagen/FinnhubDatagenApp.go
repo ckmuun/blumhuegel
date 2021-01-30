@@ -27,6 +27,7 @@ import (
 	finnhub "github.com/Finnhub-Stock-API/finnhub-go"
 	"github.com/antihax/optional"
 	"github.com/apache/pulsar-client-go/pulsar"
+	"github.com/rs/zerolog"
 	"log"
 	"os"
 )
@@ -48,18 +49,8 @@ func init() {
 	}
 }
 
-func getProducer() pulsar.Producer {
-	producer, err := pulsarClient.CreateProducer(pulsar.ProducerOptions{
-		Topic: "topico",
-	})
-
-	if err != nil {
-		panic("cant creat prod")
-	}
-	return producer
-}
-
 func main() {
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	finnhubClient := finnhub.NewAPIClient(finnhub.NewConfiguration()).DefaultApi
 	err, auth := getFinnhubAuth()
 
@@ -67,13 +58,15 @@ func main() {
 	stockCandles, _, err := finnhubClient.StockCandles(auth, "AAPL", "D", 1590988249, 1591852249, nil)
 	fmt.Printf("%+v\n", stockCandles)
 
-	producer := getProducer()
-	producer.Send(
-		context.Background(),
-		&pulsar.ProducerMessage{
-			Payload: []byte("hello"),
-		},
-	)
+	/*
+		producer := getProducer()
+		producer.Send(
+			context.Background(),
+			&pulsar.ProducerMessage{
+				Payload: []byte("hello"),
+			},
+		)
+	*/
 
 	consumer, err := pulsarClient.Subscribe(pulsar.ConsumerOptions{
 		Topic:            "topico",
