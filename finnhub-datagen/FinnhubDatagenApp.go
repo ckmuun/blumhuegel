@@ -60,12 +60,6 @@ func main() {
 
 	/*
 		producer := getProducer()
-		producer.Send(
-			context.Background(),
-			&pulsar.ProducerMessage{
-				Payload: []byte("hello"),
-			},
-		)
 	*/
 
 	consumer, err := pulsarClient.Subscribe(pulsar.ConsumerOptions{

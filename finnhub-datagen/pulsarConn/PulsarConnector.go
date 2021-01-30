@@ -7,18 +7,14 @@ import (
 )
 
 var pulsarClientSingleton *pulsar.Client
-
-type PulsarConnector struct {
-	pulsarClientSingleton *pulsar.Client
-	once                  sync.Once
-}
+var once sync.Once
 
 /*
 	This method shall create a singleton.
 */
-func (conn *PulsarConnector) GetPulsarClientInstance() *pulsar.Client {
+func GetPulsarClientInstance() *pulsar.Client {
 	log.Print("init pulsar client")
-	conn.once.Do(func() {
+	once.Do(func() {
 		pulsarClient, err := pulsar.NewClient(
 			pulsar.ClientOptions{
 				URL: "pulsar://95.121.107.34.bc.googleusercontent.com:6650",
@@ -29,9 +25,9 @@ func (conn *PulsarConnector) GetPulsarClientInstance() *pulsar.Client {
 		}
 
 		defer pulsarClient.Close()
-		conn.pulsarClientSingleton = &pulsarClient
+		pulsarClientSingleton = &pulsarClient
 	})
-	return conn.pulsarClientSingleton
+	return pulsarClientSingleton
 }
 
 /*
@@ -41,9 +37,9 @@ func (conn *PulsarConnector) GetPulsarClientInstance() *pulsar.Client {
 	Note that the syntax is [persistent || non-persistent]://<tenant>/<namespace>/<topic>
 	just <topic> will default to persistent://default/pulsar/<topic>
 */
-func (conn *PulsarConnector) GetProducer(topic string) *pulsar.Producer {
+func GetProducer(topic string) pulsar.Producer {
 	log.Print("deref pulsar client to create producer")
-	client := *conn.pulsarClientSingleton
+	client := *pulsarClientSingleton
 	log.Print("creating producer")
 	producer, err := client.CreateProducer(pulsar.ProducerOptions{
 		Topic: topic,
@@ -52,16 +48,16 @@ func (conn *PulsarConnector) GetProducer(topic string) *pulsar.Producer {
 	if err != nil {
 		panic("cant creat prod")
 	}
-	defer producer.Close()
-	return &producer
+	//defer producer.Close()
+	return producer
 }
 
 /*
 	Create a pulsar consumer for a given topic and a given subscriptionName
 */
-func (conn *PulsarConnector) GetConsumer(topic string, subscriptionName string) *pulsar.Consumer {
+func GetConsumer(topic string, subscriptionName string) pulsar.Consumer {
 	log.Print("deref pulsar client to create consumer e.g. subscription")
-	client := *conn.pulsarClientSingleton
+	client := *pulsarClientSingleton
 
 	log.Print("creat consumer subscriber")
 	consumer, err := client.Subscribe(
@@ -74,7 +70,7 @@ func (conn *PulsarConnector) GetConsumer(topic string, subscriptionName string) 
 		panic("could not create consumer")
 	}
 
-	defer consumer.Close()
+	//	defer consumer.Close()
 
-	return &consumer
+	return consumer
 }
