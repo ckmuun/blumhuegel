@@ -8,4 +8,5 @@ require (
 	github.com/apache/pulsar-client-go v0.3.0
 	github.com/prometheus/common v0.10.0
 	github.com/rs/zerolog v1.20.0
+	golang.org/x/net v0.0.0-20200520004742-59133d7f0dd7
 )

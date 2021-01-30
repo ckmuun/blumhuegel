@@ -12,7 +12,7 @@ var once sync.Once
 /*
 	This method shall create a singleton.
 */
-func GetPulsarClientInstance() *pulsar.Client {
+func InitPulsarClientInstance() *pulsar.Client {
 	log.Print("init pulsar client")
 	once.Do(func() {
 		pulsarClient, err := pulsar.NewClient(

@@ -21,15 +21,8 @@ func main() {
 */
 
 import (
-	"bufio"
-	"context"
-	"fmt"
-	finnhub "github.com/Finnhub-Stock-API/finnhub-go"
-	"github.com/antihax/optional"
 	"github.com/apache/pulsar-client-go/pulsar"
 	"github.com/rs/zerolog"
-	"log"
-	"os"
 )
 
 var pulsarClient pulsar.Client
@@ -51,32 +44,14 @@ func init() {
 
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	finnhubClient := finnhub.NewAPIClient(finnhub.NewConfiguration()).DefaultApi
-	err, auth := getFinnhubAuth()
 
+}
+
+/*
 	//Stock candles
 	stockCandles, _, err := finnhubClient.StockCandles(auth, "AAPL", "D", 1590988249, 1591852249, nil)
 	fmt.Printf("%+v\n", stockCandles)
 
-	/*
-		producer := getProducer()
-	*/
-
-	consumer, err := pulsarClient.Subscribe(pulsar.ConsumerOptions{
-		Topic:            "topico",
-		SubscriptionName: "my-sub",
-		Type:             pulsar.Shared,
-	})
-
-	defer consumer.Close()
-
-	msg, err := consumer.Receive(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("Received message msgId: %#v -- content: '%s'\n",
-		msg.ID(), string(msg.Payload()))
 
 	// Example with required parameters
 	news, _, err := finnhubClient.CompanyNews(auth, "AAPL", "2020-05-01", "2020-05-01")
@@ -94,9 +69,7 @@ func main() {
 	aggregateIndicator, _, err := finnhubClient.AggregateIndicator(auth, "AAPL", "D")
 	fmt.Printf("%+v\n", aggregateIndicator)
 
-	// Basic financials
-	basicFinancials, _, err := finnhubClient.CompanyBasicFinancials(auth, "MSFT", "margin")
-	fmt.Printf("%+v\n", basicFinancials)
+
 
 	// Company earnings
 	earningsSurprises, _, err := finnhubClient.CompanyEarnings(auth, "AAPL", nil)
@@ -289,24 +262,8 @@ func main() {
 	// ETFs Country Exposure
 	etfsCountryExposureData, _, err := finnhubClient.EtfsCountryExposure(auth, "SPY")
 	fmt.Printf("%+v\n", etfsCountryExposureData)
-}
 
-func getFinnhubAuth() (error, context.Context) {
-	file, err := os.Open("api-key.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer func() {
-		if err = file.Close(); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	scanner := bufio.NewScanner(file)
-
-	auth := context.WithValue(context.Background(), finnhub.ContextAPIKey, finnhub.APIKey{
-		Key: scanner.Text(), // Replace this
-	})
-	return err, auth
 
 }
+
+*/

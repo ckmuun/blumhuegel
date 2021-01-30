@@ -10,11 +10,14 @@ import (
 
 var topic = "topico"
 
+/*
+	setup method initializing the pulsar client
+*/
 func init() {
-	GetPulsarClientInstance()
+	InitPulsarClientInstance()
 }
 
-func TestGetConsumer(t *testing.T) {
+func TestPulsarPubSubSimple(t *testing.T) {
 
 	producer := GetProducer(topic)
 	defer producer.Close()
@@ -39,10 +42,6 @@ func TestGetConsumer(t *testing.T) {
 		msg.ID(), string(msg.Payload()))
 }
 
-func TestGetProducer(t *testing.T) {
-
-}
-
-func TestGetPulsarClientInstance(t *testing.T) {
-
+func TestPulsarPubSubSchema(t *testing.T) {
+	log.Print("not implemented yet")
 }
