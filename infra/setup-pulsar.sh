@@ -11,7 +11,7 @@ kubectl config current-context
 echo "setting up namesapce via specific pulsar helm setup script"
 prepare_helm_release.sh
 
-helm install --values examples/values-minikube.yaml --set initialize=true --namespace pulsar pulsar-mini apache-pulsar/pulsar
+helm install --values values-minikube.yaml --set initialize=true --namespace pulsar pulsar-mini apache-pulsar/pulsar
 
 echo "followin pulsar pods created"
 kubectl get pods -n pulsar

@@ -14,7 +14,8 @@ var topic = "topico"
 	setup method initializing the pulsar client
 */
 func init() {
-	InitPulsarClientInstance()
+
+	InitPulsarClientInstance("pulsar://192.168.39.38:32158")
 }
 
 func TestPulsarPubSubSimple(t *testing.T) {

@@ -12,12 +12,13 @@ var once sync.Once
 /*
 	This method shall create a singleton.
 */
-func InitPulsarClientInstance() *pulsar.Client {
+func InitPulsarClientInstance(pulsarEndpoint string) *pulsar.Client {
 	log.Print("init pulsar client")
 	once.Do(func() {
 		pulsarClient, err := pulsar.NewClient(
 			pulsar.ClientOptions{
-				URL: "pulsar://95.121.107.34.bc.googleusercontent.com:6650",
+				URL: pulsarEndpoint,
+				//URL: "pulsar://95.121.107.34.bc.googleusercontent.com:6650",
 			})
 
 		if err != nil {

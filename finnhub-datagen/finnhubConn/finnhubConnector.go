@@ -41,7 +41,7 @@ func getFinnhubAuth() (error, context.Context) {
 	return err, auth
 }
 
-func GetBasicFinancials() {
+func GetBasicFinancials() (finnhub.BasicFinancials, error) {
 	// Basic financials
 	err, auth := getFinnhubAuth()
 	if nil != err {
@@ -50,4 +50,5 @@ func GetBasicFinancials() {
 
 	basicFinancials, _, err := finnhubClient.CompanyBasicFinancials(auth, "MSFT", "margin")
 	fmt.Printf("%+v\n", basicFinancials)
+	return basicFinancials, err
 }
