@@ -1,2 +1,12 @@
-pulsar-endpoint: pulsar://10.107.158.233:6650
+pulsar-endpoint: pulsar://192.168.39.38:32158
+
+pulsar-tenant: blumhuegel
+pulsar-namespace: finnhub-datagen
+
+topics:
+  candlesticks: candlesticks
+  market-news: market-news
+
+
+
 
