@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/Finnhub-Stock-API/finnhub-go v1.2.1 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
-	github.com/gin-gonic/gin v1.6.3 // indirect
+	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
@@ -27,6 +27,8 @@ require (
 	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
 	golang.org/x/text v0.3.5 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
+	google.golang.org/genproto v0.0.0-20210207032614-bba0dbe2a9ea // indirect
+	google.golang.org/grpc v1.35.0 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

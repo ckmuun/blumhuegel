@@ -1,18 +1,48 @@
 package main
 
 import (
-	"fmt"
+	"github.com/gin-gonic/gin"
 	"log"
+	"sort"
 )
 
+var usSymbolsFull = make(map[string]assetSymbol)
+
+// TODO add configuration for file-based port settings
 func main() {
 
-	/*
-		TODO make ref data lke stock symbols available via HTTP and / or gRPC server.
-	*/
+	log.Println("fetching us symbols")
+	usSymbolsFull = GetSymbols("US")
 
-	result := GetSymbols("US")
-	log.Print("printing fetched result")
-	fmt.Println(result)
+	router := setupRouter()
+	router.Run(":7077")
+}
 
+func setupRouter() *gin.Engine {
+	router := gin.Default()
+
+	router.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, "pong")
+	})
+
+	router.GET("/symbols/us/short", func(c *gin.Context) {
+		c.JSON(200, getAssetSymbolShorthands(usSymbolsFull))
+	})
+	return router
+}
+
+/*
+	This just takes the map keys (the stock symbol shorthands) and puts them into an array.
+*/
+func getAssetSymbolShorthands(fullSymbols map[string]assetSymbol) []string {
+	keys := make([]string, len(fullSymbols))
+
+	i := 0
+	for k := range fullSymbols {
+		keys[i] = k
+		i++
+	}
+	// Everything in Go is evaluated lazily, but this runs in-place.
+	sort.Strings(keys)
+	return keys
 }
