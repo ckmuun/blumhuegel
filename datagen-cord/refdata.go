@@ -1,12 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 )
 
@@ -27,10 +29,27 @@ type assetSymbol struct {
 	AssetType     string `json:"type"`
 }
 
+func getApiKey() string {
+	log.Println("loading api key")
+	file, err := os.Open("./api-key.txt") // The "./" prefix is required
+
+	if err != nil {
+		log.Fatal()
+	}
+	defer func() {
+		if err = file.Close(); err != nil {
+			log.Fatal()
+		}
+	}()
+
+	scanner := bufio.NewScanner(file)
+
+	apikey := scanner.Text()
+	return apikey
+}
+
 func GetSymbols(exchange string) map[string]assetSymbol {
-	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=c07ianf48v6retjaflk0")
-	//resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=")
-	//resp, err := http.Get("https://www.google.com")
+	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=" + getApiKey())
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -77,7 +96,6 @@ func convertSymbolArr2Map(symbols []assetSymbol) (symbolMap map[string]assetSymb
 	}
 
 	for _, symbol := range symbols {
-		//	log.Println(symbol)
 		symbolMap[symbol.Symbol] = symbol
 	}
 	return symbolMap, err
