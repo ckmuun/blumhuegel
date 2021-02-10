@@ -28,8 +28,8 @@ type assetSymbol struct {
 }
 
 func GetSymbols(exchange string) map[string]assetSymbol {
-	//client := http.Client{}
-	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=c07ianf48v6retjaflk0")
+	//resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=c07ianf48v6retjaflk0")
+	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=")
 	//resp, err := http.Get("https://www.google.com")
 	if err != nil {
 		fmt.Println(err)
@@ -41,12 +41,6 @@ func GetSymbols(exchange string) map[string]assetSymbol {
 
 	buf, _ := ioutil.ReadAll(resp.Body)
 
-	//jsonbuf := string(buf)
-
-	fmt.Println("################################################################")
-	//fmt.Println(jsonbuf)
-	fmt.Println("################################################################")
-
 	unmarshalErr := json.Unmarshal(buf, &result)
 	if unmarshalErr != nil {
 		panic(unmarshalErr)
@@ -56,21 +50,7 @@ func GetSymbols(exchange string) map[string]assetSymbol {
 
 	fmt.Println(result)
 
-	// buf is non empty, around 4M Bytes TODO how do we serdes the byte buffer into a json string and/ or a runtime struct / interface
-
 	log.Print("fetching stock symbols from finnhub")
-	/*	if err != nil {
-			fmt.Println(err)
-		}
-
-		//	res := json.NewDecoder(resp.Body).Decode(&result)
-	*/
-
-	//resp, err := client.Do(request)
-	//var result map[string]interface{}
-
-	log.Print("res:")
-	//	log.Print(&res)
 
 	return resultMap
 }
