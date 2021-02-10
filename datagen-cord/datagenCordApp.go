@@ -25,6 +25,10 @@ func setupRouter() *gin.Engine {
 		c.JSON(200, "pong")
 	})
 
+	router.GET("/symbols/us", func(c *gin.Context) {
+		c.JSON(200, usSymbolsFull)
+	})
+
 	router.GET("/symbols/us/short", func(c *gin.Context) {
 		c.JSON(200, getAssetSymbolShorthands(usSymbolsFull))
 	})
@@ -35,6 +39,10 @@ func setupRouter() *gin.Engine {
 	This just takes the map keys (the stock symbol shorthands) and puts them into an array.
 */
 func getAssetSymbolShorthands(fullSymbols map[string]assetSymbol) []string {
+	log.Println("converting full symbols map to array containing shorthands")
+	log.Println("number of symbols:")
+	log.Println(len(fullSymbols))
+
 	keys := make([]string, len(fullSymbols))
 
 	i := 0
@@ -43,6 +51,7 @@ func getAssetSymbolShorthands(fullSymbols map[string]assetSymbol) []string {
 		i++
 	}
 	// Everything in Go is evaluated lazily, but this runs in-place.
+	log.Println("sorting shorthands")
 	sort.Strings(keys)
 	return keys
 }

@@ -28,15 +28,14 @@ type assetSymbol struct {
 }
 
 func GetSymbols(exchange string) map[string]assetSymbol {
-	//resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=c07ianf48v6retjaflk0")
-	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=")
+	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=c07ianf48v6retjaflk0")
+	//resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=")
 	//resp, err := http.Get("https://www.google.com")
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	defer resp.Body.Close()
-	var resultMap map[string]assetSymbol
 	var result []assetSymbol
 
 	buf, _ := ioutil.ReadAll(resp.Body)
@@ -47,8 +46,13 @@ func GetSymbols(exchange string) map[string]assetSymbol {
 	}
 	// clear ~5mb byte buffer
 	buf = nil
+	resultMap, err := convertSymbolArr2Map(result)
 
-	fmt.Println(result)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(resultMap["AAPL"])
 
 	log.Print("fetching stock symbols from finnhub")
 
@@ -73,7 +77,7 @@ func convertSymbolArr2Map(symbols []assetSymbol) (symbolMap map[string]assetSymb
 	}
 
 	for _, symbol := range symbols {
-		log.Println(symbol)
+		//	log.Println(symbol)
 		symbolMap[symbol.Symbol] = symbol
 	}
 	return symbolMap, err
