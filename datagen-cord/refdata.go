@@ -39,8 +39,9 @@ func getApiKey() string {
 	return apikey
 }
 
-func GetSymbols(exchange string) map[string]AssetSymbol {
-	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=" + getApiKey())
+func GetSymbolsAsArr(exchange string) []AssetSymbol {
+	//resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=" + getApiKey())
+	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=" + "c07ianf48v6retjaflk0")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -56,15 +57,16 @@ func GetSymbols(exchange string) map[string]AssetSymbol {
 	}
 	// clear ~5mb byte buffer
 	buf = nil
-	resultMap, err := convertSymbolArr2Map(result)
+
+	return result
+}
+
+func GetSymbolsAsShorthandMap(exchange string) map[string]AssetSymbol {
+	resultMap, err := ConvertSymbolArr2Map(GetSymbolsAsArr(exchange))
 
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println(resultMap["AAPL"])
-
-	log.Print("fetching stock symbols from finnhub")
 
 	return resultMap
 }
@@ -73,7 +75,7 @@ func GetSymbols(exchange string) map[string]AssetSymbol {
 	This function converts an array of model.Asset Symbols into a map with
 	the symbol shorthand (f.e. 'AAPL' for Apple Inc.) as key and the full symbol as val.
 */
-func convertSymbolArr2Map(symbols []AssetSymbol) (symbolMap map[string]AssetSymbol, err error) {
+func ConvertSymbolArr2Map(symbols []AssetSymbol) (symbolMap map[string]AssetSymbol, err error) {
 	symbolMap = make(map[string]AssetSymbol)
 	err = nil
 

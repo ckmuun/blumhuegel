@@ -47,7 +47,7 @@ func TestGetSymbols(t *testing.T) {
 
 func Test_convertSymbolArr2Map(t *testing.T) {
 
-	symbolMap, err := convertSymbolArr2Map(AssetSymbols)
+	symbolMap, err := ConvertSymbolArr2Map(AssetSymbols)
 	assert.NoError(t, err)
 
 	assert.Exactly(t, symbolMap["CNTMF"], AssetSymbols[0])
