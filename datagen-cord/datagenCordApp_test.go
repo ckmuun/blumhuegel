@@ -23,34 +23,34 @@ func Test_main(t *testing.T) {
 }
 
 func Test_getAssetSymbolsShorthands(t *testing.T) {
-	symbol := assetSymbol{"USD",
-		"AB INTERNATIONAL GROUP CORP",
-		"ABQQ",
-		"BBG007B0Z9J3",
-		"OTCM",
-		"ABQQ",
-		"Common Stock",
+	symbol := AssetSymbol{Currency: "USD",
+		Description:   "AB INTERNATIONAL GROUP CORP",
+		DisplaySymbol: "ABQQ",
+		Figi:          "BBG007B0Z9J3",
+		Mic:           "OTCM",
+		Symbol:        "ABQQ",
+		AssetType:     "Common Stock",
 	}
-	symbol1 := assetSymbol{
-		"USD",
-		"PLEXUS HOLDINGS PLC",
-		"PLXXF",
-		"BBG003PMR1G8",
-		"OOTC",
-		"PLXXF",
-		"Common Stock",
+	symbol1 := AssetSymbol{
+		Currency:      "USD",
+		Description:   "PLEXUS HOLDINGS PLC",
+		DisplaySymbol: "PLXXF",
+		Figi:          "BBG003PMR1G8",
+		Mic:           "OOTC",
+		Symbol:        "PLXXF",
+		AssetType:     "Common Stock",
 	}
-	symbol2 := assetSymbol{
-		"USD",
-		"CANSORTIUM INC",
-		"CNTMF",
-		"BBG00NWMB6Y2",
-		"OTCM",
-		"CNTMF",
-		"Common Stock",
+	symbol2 := AssetSymbol{
+		Currency:      "USD",
+		Description:   "CANSORTIUM INC",
+		DisplaySymbol: "CNTMF",
+		Figi:          "BBG00NWMB6Y2",
+		Mic:           "OTCM",
+		Symbol:        "CNTMF",
+		AssetType:     "Common Stock",
 	}
 
-	symbolmap := make(map[string]assetSymbol)
+	symbolmap := make(map[string]AssetSymbol)
 
 	symbolmap["ABQQ"] = symbol
 	symbolmap["PLXXF"] = symbol1

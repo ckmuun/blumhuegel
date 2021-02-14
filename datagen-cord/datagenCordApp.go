@@ -6,13 +6,13 @@ import (
 	"sort"
 )
 
-var usSymbolsFull = make(map[string]assetSymbol)
+var UsSymbolsFull = make(map[string]AssetSymbol)
 
 // TODO add configuration for file-based port settings
-func main() {
+func main1() {
 
 	log.Println("fetching us symbols")
-	usSymbolsFull = GetSymbols("US")
+	UsSymbolsFull = GetSymbols("US")
 
 	router := setupRouter()
 	router.Run(":7077")
@@ -26,11 +26,11 @@ func setupRouter() *gin.Engine {
 	})
 
 	router.GET("/symbols/us", func(c *gin.Context) {
-		c.JSON(200, usSymbolsFull)
+		c.JSON(200, UsSymbolsFull)
 	})
 
 	router.GET("/symbols/us/short", func(c *gin.Context) {
-		c.JSON(200, getAssetSymbolShorthands(usSymbolsFull))
+		c.JSON(200, getAssetSymbolShorthands(UsSymbolsFull))
 	})
 	return router
 }
@@ -38,7 +38,7 @@ func setupRouter() *gin.Engine {
 /*
 	This just takes the map keys (the stock symbol shorthands) and puts them into an array.
 */
-func getAssetSymbolShorthands(fullSymbols map[string]assetSymbol) []string {
+func getAssetSymbolShorthands(fullSymbols map[string]AssetSymbol) []string {
 	log.Println("converting full symbols map to array containing shorthands")
 	log.Println("number of symbols:")
 	log.Println(len(fullSymbols))

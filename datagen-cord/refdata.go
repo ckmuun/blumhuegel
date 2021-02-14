@@ -15,19 +15,10 @@ import (
 var once sync.Once
 
 /*
-	Struct for Asset Symbols.
+	Struct for model.Asset Symbols.
 	In Finnhub they are just called "symbols", we prefix it here to avoid confusion.
-	Also, the assetType field is called just "type" in finnhub, prefixed to distinguish between type golang keyword
+	Also, the model.AssetType field is called just "type" in finnhub, prefixed to distinguish between type golang keyword
 */
-type assetSymbol struct {
-	Currency      string `json:"currency"`
-	Description   string `json:"description"`
-	DisplaySymbol string `json:"displaySymbol"`
-	Figi          string `json:"figi"`
-	Mic           string `json:"mic"`
-	Symbol        string `json:"symbol"`
-	AssetType     string `json:"type"`
-}
 
 func getApiKey() string {
 	log.Println("loading api key")
@@ -48,14 +39,14 @@ func getApiKey() string {
 	return apikey
 }
 
-func GetSymbols(exchange string) map[string]assetSymbol {
+func GetSymbols(exchange string) map[string]AssetSymbol {
 	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=" + getApiKey())
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	defer resp.Body.Close()
-	var result []assetSymbol
+	var result []AssetSymbol
 
 	buf, _ := ioutil.ReadAll(resp.Body)
 
@@ -79,11 +70,11 @@ func GetSymbols(exchange string) map[string]assetSymbol {
 }
 
 /*
-	This function converts an array of Asset Symbols into a map with
+	This function converts an array of model.Asset Symbols into a map with
 	the symbol shorthand (f.e. 'AAPL' for Apple Inc.) as key and the full symbol as val.
 */
-func convertSymbolArr2Map(symbols []assetSymbol) (symbolMap map[string]assetSymbol, err error) {
-	symbolMap = make(map[string]assetSymbol)
+func convertSymbolArr2Map(symbols []AssetSymbol) (symbolMap map[string]AssetSymbol, err error) {
+	symbolMap = make(map[string]AssetSymbol)
 	err = nil
 
 	defer func() {
@@ -98,5 +89,21 @@ func convertSymbolArr2Map(symbols []assetSymbol) (symbolMap map[string]assetSymb
 	for _, symbol := range symbols {
 		symbolMap[symbol.Symbol] = symbol
 	}
+	return symbolMap, err
+}
+
+func convertSymbolArr2MapWithGivenKey(fieldToUseAsKey string, symbols []AssetSymbol) (symbolMap map[string][]AssetSymbol, err error) {
+	symbolMap = make(map[string][]AssetSymbol)
+	err = nil
+
+	defer func() {
+		symbols = nil
+	}()
+
+	if len(symbols) == 0 {
+		err = errors.New("error -- can not transform 0 length arr")
+		return symbolMap, err
+	}
+
 	return symbolMap, err
 }
