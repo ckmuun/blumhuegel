@@ -6,13 +6,13 @@ import (
 	"sort"
 )
 
-var UsSymbolsFull = make(map[string]AssetSymbol)
+var usSymbolsFull = make(map[string]AssetSymbol)
 
 // TODO add configuration for file-based port settings
-func main1() {
+func main() {
 
 	log.Println("fetching us symbols")
-	UsSymbolsFull = GetSymbols("US")
+	usSymbolsFull = GetSymbols("US")
 
 	router := setupRouter()
 	router.Run(":7077")
@@ -26,12 +26,17 @@ func setupRouter() *gin.Engine {
 	})
 
 	router.GET("/symbols/us", func(c *gin.Context) {
-		c.JSON(200, UsSymbolsFull)
+		c.JSON(200, usSymbolsFull)
 	})
 
 	router.GET("/symbols/us/short", func(c *gin.Context) {
-		c.JSON(200, getAssetSymbolShorthands(UsSymbolsFull))
+		c.JSON(200, getAssetSymbolShorthands(usSymbolsFull))
 	})
+
+	router.GET("/symbols/us/common", func(c *gin.Context) {
+		c.JSON(200, getAssetSymbolShorthands(usSymbolsFull))
+	})
+
 	return router
 }
 
