@@ -14,12 +14,6 @@ import (
 
 var once sync.Once
 
-/*
-	Struct for model.Asset Symbols.
-	In Finnhub they are just called "symbols", we prefix it here to avoid confusion.
-	Also, the model.AssetType field is called just "type" in finnhub, prefixed to distinguish between type golang keyword
-*/
-
 func getApiKey() string {
 	log.Println("loading api key")
 	file, err := os.Open("./api-key.txt") // The "./" prefix is required
@@ -40,8 +34,7 @@ func getApiKey() string {
 }
 
 func GetSymbolsAsArr(exchange string) []AssetSymbol {
-	//resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=" + getApiKey())
-	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=" + "c07ianf48v6retjaflk0")
+	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=" + getApiKey())
 	if err != nil {
 		fmt.Println(err)
 	}
