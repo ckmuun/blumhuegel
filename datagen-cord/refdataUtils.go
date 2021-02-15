@@ -8,8 +8,9 @@ import (
 /*
 
  */
-func NormalizeAssetSymbols(raw []AssetSymbol) (normalized []AssetSymbol) {
+func NormalizeAssetSymbols(raw []AssetSymbol) []AssetSymbol {
 
+	normalized := make([]AssetSymbol, len(raw))
 	log.Println("normalizing fields of assetSymbols")
 	for index := range raw {
 		rawsym := raw[index]
@@ -22,13 +23,13 @@ func NormalizeAssetSymbols(raw []AssetSymbol) (normalized []AssetSymbol) {
 // helper method
 func trimToLowerCase(symbol AssetSymbol) AssetSymbol {
 
-	symbol.AssetType = s.ToLower(s.ReplaceAll(symbol.AssetType, " ", ""))
-	symbol.DisplaySymbol = s.ToLower(s.ReplaceAll(symbol.DisplaySymbol, " ", ""))
-	symbol.Description = s.ToLower(s.ReplaceAll(symbol.Description, " ", ""))
-	symbol.Figi = s.ToLower(s.ReplaceAll(symbol.Figi, " ", ""))
-	symbol.Mic = s.ToLower(s.ReplaceAll(symbol.Mic, " ", ""))
-	symbol.Currency = s.ToLower(s.ReplaceAll(symbol.Currency, " ", ""))
-	symbol.Symbol = s.ToLower(s.ReplaceAll(symbol.Symbol, " ", ""))
+	symbol.AssetType = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.AssetType, " ", "-")))
+	symbol.DisplaySymbol = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.DisplaySymbol, " ", "-")))
+	symbol.Description = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.Description, " ", "-")))
+	symbol.Figi = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.Figi, " ", "-")))
+	symbol.Mic = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.Mic, " ", "-")))
+	symbol.Currency = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.Currency, " ", "-")))
+	symbol.Symbol = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.Symbol, " ", "-")))
 
 	return symbol
 }

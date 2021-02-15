@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/stretchr/testify/assert"
+	"log"
 	"testing"
 )
 
@@ -42,13 +43,51 @@ func init() {
 }
 
 func TestNormalizeAssetSymbols(t *testing.T) {
+	var assetSymbolsNormalized = make([]AssetSymbol, 3)
+	symbolNorm := AssetSymbol{
+		Currency:      "usd",
+		Description:   "ab-international-group-corp",
+		DisplaySymbol: "abqq",
+		Figi:          "bbg007b0z9j3",
+		Mic:           "otcm",
+		Symbol:        "abqq",
+		AssetType:     "common-stock",
+	}
+	symbol1Norm := AssetSymbol{
+		Currency:      "usd",
+		Description:   "plexus-holdings-plc",
+		DisplaySymbol: "plxxf",
+		Figi:          "bbg003pmr1g8",
+		Mic:           "ootc",
+		Symbol:        "plxxf",
+		AssetType:     "common-stock",
+	}
+	symbol2Norm := AssetSymbol{
+		Currency:      "usd",
+		Description:   "cansortium-inc",
+		DisplaySymbol: "cntmf",
+		Figi:          "bbg00nwmb6y2",
+		Mic:           "otcm",
+		Symbol:        "cntmf",
+		AssetType:     "common-stock",
+	}
 
+	assetSymbolsNormalized[0] = symbolNorm
+	assetSymbolsNormalized[1] = symbol1Norm
+	assetSymbolsNormalized[2] = symbol2Norm
+
+	normalized := NormalizeAssetSymbols(assetSymbols1)
+
+	log.Println("conducting asserts")
+	assert.Exactly(t, normalized[0], assetSymbolsNormalized[0])
+	assert.Exactly(t, normalized[1], assetSymbolsNormalized[1])
+	assert.Exactly(t, normalized[2], assetSymbolsNormalized[2])
 }
 
 func Test_trimToLowerCase(t *testing.T) {
 
-	someString := " THIS is A test from Testistan"
-	expected := "thisisatestfromtestistan"
+	someString := " THIS is A test 227 from Testistan"
+	expected := "this-is-a-test-227-from-testistan"
 
 	symbol := AssetSymbol{
 		Currency:      someString,
