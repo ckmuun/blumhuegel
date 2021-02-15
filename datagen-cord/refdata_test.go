@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var AssetSymbols = make([]AssetSymbol, 3)
+var assetSymbols = make([]AssetSymbol, 3)
 
 func init() {
 	symbol := AssetSymbol{Currency: "USD",
@@ -35,9 +35,9 @@ func init() {
 		AssetType:     "Common Stock",
 	}
 
-	AssetSymbols[0] = symbol
-	AssetSymbols[1] = symbol1
-	AssetSymbols[2] = symbol2
+	assetSymbols[0] = symbol
+	assetSymbols[1] = symbol1
+	assetSymbols[2] = symbol2
 
 }
 
@@ -47,10 +47,10 @@ func TestGetSymbols(t *testing.T) {
 
 func Test_convertSymbolArr2Map(t *testing.T) {
 
-	symbolMap, err := ConvertSymbolArr2Map(AssetSymbols)
+	symbolMap, err := ConvertSymbolArr2Map(assetSymbols)
 	assert.NoError(t, err)
 
-	assert.Exactly(t, symbolMap["CNTMF"], AssetSymbols[0])
-	assert.Exactly(t, symbolMap["PLXXF"], AssetSymbols[1])
-	assert.Exactly(t, symbolMap["ABQQ"], AssetSymbols[2])
+	assert.Exactly(t, symbolMap["CNTMF"], assetSymbols[0])
+	assert.Exactly(t, symbolMap["PLXXF"], assetSymbols[1])
+	assert.Exactly(t, symbolMap["ABQQ"], assetSymbols[2])
 }
