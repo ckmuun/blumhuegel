@@ -8,14 +8,14 @@ import (
 	"testing"
 )
 
-var topic = "topico"
+var topic = "blumhuegel/findata/test"
 
 /*
 	setup method initializing the pulsar client
 */
 func init() {
 
-	InitPulsarClientInstance("pulsar://192.168.39.38:32158")
+	InitPulsarClientInstance("pulsar://192.168.178.8:30560")
 }
 
 func TestPulsarPubSubSimple(t *testing.T) {
@@ -24,14 +24,19 @@ func TestPulsarPubSubSimple(t *testing.T) {
 	defer producer.Close()
 
 	log.Print("senidng 'hello' message")
-	producer.Send(
+	msgId, msgerr := producer.Send(
 		context.Background(),
 		&pulsar.ProducerMessage{
-			Payload: []byte("hello"),
+			Payload: []byte("hello my friendly friend"),
 		},
 	)
+	if msgerr != nil {
+		panic("message send to pulsar failed")
+	}
 
-	consumer := GetConsumer(topic, "my-subscription")
+	fmt.Print("message id ", msgId)
+
+	consumer := GetConsumer(topic, "gopher-subscription")
 	defer consumer.Close()
 
 	msg, err := consumer.Receive(context.Background())
