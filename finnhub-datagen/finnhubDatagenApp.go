@@ -3,30 +3,20 @@ package main
 /*
 	Main Application to fetch data from Finnhub.io and publish it into apache pulsar
 */
-/*
-func main() {
-
-	fmt.Println("initializing finnhub datagen fetcher")
-
-	pulsarClient, err := pulsar.NewClient(
-		pulsar.ClientOptions{
-			URL: "pulsar://95.121.107.34.bc.googleusercontent.com:6650",
-		})
-
-	if err != nil {
-		panic("error during pulsar client init")
-	}
-	defer pulsarClient.Close()
-}
-*/
 
 import (
+	"finnhub-datagen/cordClient"
+	"finnhub-datagen/finnhubConn"
 	"github.com/apache/pulsar-client-go/pulsar"
-	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 )
 
 var pulsarClient pulsar.Client
 
+var symbolsToQuery []string
+
+// init pulsar client
 func init() {
 	var pulsarClienInitErr error
 
@@ -43,14 +33,28 @@ func init() {
 }
 
 func main() {
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+
+	finnhubConn.InitFinnhubClient()
+
+	viper.SetEnvPrefix("BLUM") // uppercased automatically
+	viper.BindEnv("FINNHUB_API_KEY")
+
+	log.Print("verifying presence of Finnhub API Key")
+	financials, err := finnhubConn.GetBasicFinancials("MSFT", "margin")
+
+	if err != nil {
+		panic("can not fetch from finnhub, probably no or wrong finnhub api key supplied")
+	}
+
+	log.Print(financials)
+
+	log.Print("Getting list of stock symbols the service should query for")
+	symbolsToQuery = cordClient.GetSymbolShorthandsToQuery()
 
 }
 
 /*
 	//Stock candles
-	stockCandles, _, err := finnhubClient.StockCandles(auth, "AAPL", "D", 1590988249, 1591852249, nil)
-	fmt.Printf("%+v\n", stockCandles)
 
 
 	// Example with required parameters

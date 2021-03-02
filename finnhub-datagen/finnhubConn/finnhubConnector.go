@@ -1,12 +1,10 @@
 package finnhubConn
 
 import (
-	"bufio"
-	"fmt"
 	"github.com/Finnhub-Stock-API/finnhub-go"
 	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 	"golang.org/x/net/context"
-	"os"
 	"sync"
 )
 
@@ -22,8 +20,27 @@ func InitFinnhubClient() *finnhub.DefaultApiService {
 	return finnhubClient
 }
 
+func GetBasicFinancials(symbol string, metric string) (finnhub.BasicFinancials, error) {
+	// Basic financials
+
+	basicFinancials, _, err := finnhubClient.CompanyBasicFinancials(getFinnhubAuth(), symbol, "margin")
+	return basicFinancials, err
+}
+
+func getFinnhubAuth() context.Context {
+	apikey := viper.Get("API_KEY")
+	auth := context.WithValue(context.Background(), finnhub.ContextAPIKey, finnhub.APIKey{
+		Key: apikey.(string),
+	})
+	return auth
+
+}
+
+// OLD file-based configuration of API key
+/*
 func getFinnhubAuth() (error, context.Context) {
 	file, err := os.Open("../api-key.txt")
+
 	if err != nil {
 		log.Fatal()
 	}
@@ -41,14 +58,4 @@ func getFinnhubAuth() (error, context.Context) {
 	return err, auth
 }
 
-func GetBasicFinancials() (finnhub.BasicFinancials, error) {
-	// Basic financials
-	err, auth := getFinnhubAuth()
-	if nil != err {
-		panic("can not authenticate to finnhub api")
-	}
-
-	basicFinancials, _, err := finnhubClient.CompanyBasicFinancials(auth, "MSFT", "margin")
-	fmt.Printf("%+v\n", basicFinancials)
-	return basicFinancials, err
-}
+*/

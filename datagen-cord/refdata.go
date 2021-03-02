@@ -1,19 +1,28 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"errors"
-	"fmt"
+	"github.com/Finnhub-Stock-API/finnhub-go"
+	"github.com/spf13/viper"
+	"golang.org/x/net/context"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"sync"
 )
 
 var once sync.Once
 
+func getFinnhubAuth() context.Context {
+	apikey := viper.Get("API_KEY")
+	auth := context.WithValue(context.Background(), finnhub.ContextAPIKey, finnhub.APIKey{
+		Key: apikey.(string),
+	})
+	return auth
+}
+
+/*
 func getApiKey() string {
 	log.Println("loading api key")
 	file, err := os.Open("./api-key.txt") // The "./" prefix is required
@@ -32,11 +41,18 @@ func getApiKey() string {
 	apikey := scanner.Text()
 	return apikey
 }
+*/
 
-func GetSymbolsAsArr(exchange string) []AssetSymbol {
-	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=" + getApiKey())
+// setup viper
+func init() {
+
+}
+
+func GetFinnhubSymbolsAsArr(exchange string) []AssetSymbol {
+	apikey := viper.Get("FINNHUB_API_KEY") //.(string)
+	resp, err := http.Get("https://finnhub.io/api/v1/stock/symbol?exchange=" + exchange + "&token=" + apikey.(string))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	defer resp.Body.Close()
@@ -55,7 +71,7 @@ func GetSymbolsAsArr(exchange string) []AssetSymbol {
 }
 
 func GetSymbolsAsShorthandMap(exchange string) map[string]AssetSymbol {
-	resultMap, err := ConvertSymbolArr2Map(GetSymbolsAsArr(exchange))
+	resultMap, err := ConvertSymbolArr2Map(GetFinnhubSymbolsAsArr(exchange))
 
 	if err != nil {
 		panic(err)

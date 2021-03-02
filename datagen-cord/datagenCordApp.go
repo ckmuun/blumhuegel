@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"log"
 	"sort"
 )
@@ -11,14 +12,21 @@ var usSymbolsFull = make(map[string]AssetSymbol)
 
 var symbols = make(map[string][]AssetSymbol)
 
-// TODO add configuration for file-based port settings
+// TODO add configuration for file-based port settings, add general means for dynamic configuration
+/*
+	TODO add support for symbol fetching from
+*/
 func main() {
+
+	viper.SetDefault("finnhub-api-key", "no-finnhub-api-key-loaded")
+	viper.SetEnvPrefix("BLUM")
+	_ = viper.BindEnv("FINNHUB_API_KEY")
 
 	log.Println("fetching usExchangeShorthand symbols")
 	usSymbolsFull = GetSymbolsAsShorthandMap("US")
 
 	usExchangeShorthand := "us"
-	symbols[usExchangeShorthand] = GetSymbolsAsArr(usExchangeShorthand)
+	symbols[usExchangeShorthand] = GetFinnhubSymbolsAsArr(usExchangeShorthand)
 
 	router := setupRouter()
 	router.Run(":7077")
@@ -31,14 +39,15 @@ func setupRouter() *gin.Engine {
 		c.JSON(200, "pong")
 	})
 
-	//router.GET("/symbols/:exchange", func(c *gin.Context) {
-	//	c.JSON(200, usSymbolsFull)
-	//})
+	router.GET("/short/all", func(c *gin.Context) {
+		c.JSON(200, getAssetSymbolShorthands(usSymbolsFull))
+	})
 
 	//router.GET("/symbols/:exchange/*short", func(c *gin.Context) {
 	//	c.JSON(200, getAssetSymbolShorthands(usSymbolsFull))
 	//})
 
+	// exchange is the country code for the requested stock exchange, e.g. "US"
 	router.GET("/symbols/:exchange/:field/:fieldValue", func(c *gin.Context) {
 		exchange := c.Param("exchange")
 		field := c.Param("field")
@@ -50,7 +59,7 @@ func setupRouter() *gin.Engine {
 
 		// todo return the 400 if the query params are validated as junk , return a 500 if err != nil.
 		if nil != err {
-			c.JSON(400, err)
+			c.JSON(500, err)
 		}
 
 		c.JSON(200, subset)
@@ -60,10 +69,14 @@ func setupRouter() *gin.Engine {
 }
 
 /*
-	// BIG TODO remove the whitespace and case sensittivy
 
 	This function crafts the specific response for a SQL WHERE-like request.
-	Basically, the client is asking "give me all stock symbols with this value in this field
+	Basically, the client is asking "give me all stock symbols with this value in this field"
+	Think of it as a (very) poor man's query engine.
+	It uses a magic index integer that codes the field of AssetSymbol to look at.
+	The plan is to move this stuff into postgres with full SQL syntax, that's why this implemenation
+	is very rudimentary
+
 	type AssetSymbol struct {
 		Currency      string `json:"currency"`
 		Description   string `json:"description"`
@@ -123,7 +136,7 @@ func populateReturnSymbolArr(symbols []AssetSymbol, magicIndex int8, fieldValue 
 
 /*
 	TODO this implementation is not really elegant, with the magic number.
-	FIXME add some sort of enum here or make this not-hardcoded
+	FIXME add some sort of enum here or make this not-hardcoded or just put the data into postgres
 	The @magicIndex is hardcoded value to specify which field of AssetSymbol should be compared to the desired
 	field value.
 
