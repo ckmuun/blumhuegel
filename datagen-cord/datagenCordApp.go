@@ -43,9 +43,15 @@ func setupRouter() *gin.Engine {
 		c.JSON(200, getAssetSymbolShorthands(usSymbolsFull))
 	})
 
-	//router.GET("/symbols/:exchange/*short", func(c *gin.Context) {
-	//	c.JSON(200, getAssetSymbolShorthands(usSymbolsFull))
-	//})
+	// random demo symbols
+	router.GET("/demo", func(c *gin.Context) {
+		c.JSON(200, getDemoSymbols())
+	})
+
+	// TODO currently this 'real' endpoint also just returns the demo symbols. The magic needs to be implemented that makes this work and return proper symbols.
+	router.GET("/selection", func(c *gin.Context) {
+		c.JSON(200, getDemoSymbols())
+	})
 
 	// exchange is the country code for the requested stock exchange, e.g. "US"
 	router.GET("/symbols/:exchange/:field/:fieldValue", func(c *gin.Context) {
@@ -66,6 +72,24 @@ func setupRouter() *gin.Engine {
 	})
 
 	return router
+}
+
+func getDemoSymbols() []string {
+	demoSymbols := make([]string, 11)
+
+	demoSymbols[0] = "AAPL"
+	demoSymbols[1] = "IBM"
+	demoSymbols[2] = "MMM"
+	demoSymbols[3] = "GME"
+	demoSymbols[4] = "PLXXF"
+	demoSymbols[5] = "ASOMF"
+	demoSymbols[6] = "IBDD"
+	demoSymbols[7] = "HECCU"
+	demoSymbols[8] = "NPTVF"
+	demoSymbols[9] = "SMAWF"
+	demoSymbols[10] = "FDIS"
+
+	return demoSymbols
 }
 
 /*
