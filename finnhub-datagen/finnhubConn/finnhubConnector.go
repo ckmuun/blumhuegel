@@ -11,6 +11,10 @@ import (
 var once sync.Once
 var finnhubClient *finnhub.DefaultApiService
 
+func init() {
+	InitFinnhubClient()
+}
+
 func InitFinnhubClient() *finnhub.DefaultApiService {
 
 	log.Print("creating Pulsar Client")
@@ -18,6 +22,20 @@ func InitFinnhubClient() *finnhub.DefaultApiService {
 		finnhubClient = finnhub.NewAPIClient(finnhub.NewConfiguration()).DefaultApi
 	})
 	return finnhubClient
+}
+
+func GetTimeSensitiveData(ticker string) finnhub.Quote {
+	quote, httpResp, err := finnhubClient.Quote(getFinnhubAuth(), ticker)
+
+	if err != nil {
+		log.Warn()
+	}
+
+	if httpResp == nil {
+		log.Warn()
+	}
+
+	return quote
 }
 
 func GetBasicFinancials(symbol string, metric string) (finnhub.BasicFinancials, error) {
@@ -28,7 +46,7 @@ func GetBasicFinancials(symbol string, metric string) (finnhub.BasicFinancials, 
 }
 
 func getFinnhubAuth() context.Context {
-	apikey := viper.Get("API_KEY")
+	apikey := viper.Get("FINNHUB_API_KEY")
 	auth := context.WithValue(context.Background(), finnhub.ContextAPIKey, finnhub.APIKey{
 		Key: apikey.(string),
 	})

@@ -7,38 +7,32 @@ package main
 import (
 	"finnhub-datagen/cordClient"
 	"finnhub-datagen/finnhubConn"
+	"finnhub-datagen/pulsarConn"
 	"github.com/apache/pulsar-client-go/pulsar"
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
+	"golang.org/x/net/context"
 )
-
-var pulsarClient pulsar.Client
 
 var symbolsToQuery []string
 
 // init pulsar client
 func init() {
-	var pulsarClienInitErr error
+	initViperConfig()
+	verifyFinnhubApiKey()
+	pulsarConn.InitPulsarClientInstance(viper.GetString("PULSAR_URL"))
 
-	pulsarClient, pulsarClienInitErr = pulsar.NewClient(
-		pulsar.ClientOptions{
-			URL: "pulsar://95.121.107.34.bc.googleusercontent.com:6650",
-		})
-
-	defer pulsarClient.Close()
-
-	if pulsarClienInitErr != nil {
-		panic("could not create pulsar client")
-	}
 }
 
-func main() {
+func initViperConfig() {
+	viper.SetEnvPrefix("BLUM")
+	_ = viper.BindEnv("CORDSVC_URL")
+	_ = viper.BindEnv("PULSAR_URL")
+	_ = viper.BindEnv("FINNHUB_API_KEY")
+}
 
-	finnhubConn.InitFinnhubClient()
-
-	viper.SetEnvPrefix("BLUM") // uppercased automatically
-	viper.BindEnv("FINNHUB_API_KEY")
-
+func verifyFinnhubApiKey() {
 	log.Print("verifying presence of Finnhub API Key")
 	financials, err := finnhubConn.GetBasicFinancials("MSFT", "margin")
 
@@ -47,9 +41,57 @@ func main() {
 	}
 
 	log.Print(financials)
+}
+
+func getAndPublishQuote2Pulsar(symbol string) {
+	log.Print("getting quote")
+	quote := finnhubConn.GetTimeSensitiveData(symbol)
+	log.Print("getting pulsar producer")
+	producer := *pulsarConn.GetProducer("blumhuegel/findata/quotes")
+
+	log.Print("sending quote to pulsar")
+	msgId, err := producer.Send(
+		context.Background(),
+		&pulsar.ProducerMessage{
+			Key:   symbol,
+			Value: quote,
+		},
+	)
+	if err != nil {
+		log.Err(err)
+	}
+	log.Print("sent msgId to pulsar: ", msgId)
+}
+
+func main() {
+
+	finnhubConn.InitFinnhubClient()
 
 	log.Print("Getting list of stock symbols the service should query for")
 	symbolsToQuery = cordClient.GetSymbolShorthandsToQuery()
+
+	for index := range symbolsToQuery {
+		symbol := symbolsToQuery[index]
+		log.Print("fetching data for symbol ", symbol)
+		go getAndPublishQuote2Pulsar(symbol)
+	}
+
+	router := setupRouter()
+	router.Run(":7078")
+}
+
+/*
+	TODO extend router functionality to, for example, trigger refreshes of the quotes
+	TODO add health / metrics endpoints
+*/
+func setupRouter() *gin.Engine {
+	router := gin.Default()
+
+	router.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, "pong")
+	})
+
+	return router
 
 }
 

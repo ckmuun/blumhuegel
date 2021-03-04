@@ -7,14 +7,21 @@ import (
 )
 
 var pulsarClientSingleton *pulsar.Client
-var once sync.Once
+var pulsarProducers map[string]*pulsar.Producer
+
+var onceCreatePulsarClient sync.Once
+
+func init() {
+	pulsarProducers = make(map[string]*pulsar.Producer)
+
+}
 
 /*
 	This method shall create a singleton.
 */
 func InitPulsarClientInstance(pulsarEndpoint string) *pulsar.Client {
 	log.Print("init pulsar client")
-	once.Do(func() {
+	onceCreatePulsarClient.Do(func() {
 		pulsarClient, err := pulsar.NewClient(
 			pulsar.ClientOptions{
 				URL: pulsarEndpoint,
@@ -36,21 +43,31 @@ func InitPulsarClientInstance(pulsarEndpoint string) *pulsar.Client {
 	@return pulsar.Producer
 	@topic the topic to produce messages to.
 	Note that the syntax is [persistent || non-persistent]://<tenant>/<namespace>/<topic>
-	just <topic> will default to persistent://default/pulsar/<topic>
+	just <topic> will default to "persistent://default/pulsar/<topic>"
 */
-func GetProducer(topic string) pulsar.Producer {
+func GetProducer(persTenNsTopic string) *pulsar.Producer {
 	log.Print("deref pulsar client to create producer")
 	client := *pulsarClientSingleton
+
+	producer := pulsarProducers[persTenNsTopic]
+
+	if producer != nil {
+		return producer
+	}
+
 	log.Print("creating producer")
-	producer, err := client.CreateProducer(pulsar.ProducerOptions{
-		Topic: topic,
+	createdProducer, err := client.CreateProducer(pulsar.ProducerOptions{
+		Topic: persTenNsTopic,
 	})
 
 	if err != nil {
 		panic("cant creat prod")
 	}
 	//defer producer.Close()
-	return producer
+
+	pulsarProducers[persTenNsTopic] = &createdProducer
+
+	return &createdProducer
 }
 
 /*

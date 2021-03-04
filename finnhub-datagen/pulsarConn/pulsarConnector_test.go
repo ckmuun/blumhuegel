@@ -20,7 +20,7 @@ func init() {
 
 func TestPulsarPubSubSimple(t *testing.T) {
 
-	producer := GetProducer(topic)
+	producer := *GetProducer(topic)
 	defer producer.Close()
 
 	log.Print("senidng 'hello' message")
