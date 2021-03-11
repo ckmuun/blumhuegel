@@ -1,0 +1,12 @@
+
+# simple hello world github actions workflow
+name: say-hello
+
+on: [push]
+jobs:
+  greeting:
+    runs-on: ubuntu-16.04
+    steps:
+      - run: echo "hello world
+
+
