@@ -27,6 +27,7 @@ jobs:
   publish-latest:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: ls
       - uses: VaultVulp/gp-docker-action@1.1.7
         with:
