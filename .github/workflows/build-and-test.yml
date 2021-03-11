@@ -14,9 +14,42 @@ jobs:
         with:
           go-version: '^1.14.10'
       - run: go version
+      # print repository contents
       - run: ls
+      # run this external shell script to demonstrate the basic principle
       - run: sh scripts/external-sh-hello.sh
 
+      - run: cd datagen-cord && sh ../scripts/test-go-module.sh
+      - run: cd finnhub-datagen && sh ../scripts/test-go-module.sh
+      - run: cd alphavantage-datagen && sh ../scripts/test-go-module.sh
+      - run: cd quandl-datagen && sh ../scripts/test-go-module.sh
+
+  publish-latest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: VaultVulp/gp-docker-action@1.1.7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          image-name: blum-cordsvc
+          dockerfile: datagen-cord/Dockerfile
+
+
+
+        #  build-and-push-image:
+#    runs-on: ubuntu-latest
+#    needs: build
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#      - name: Build container image
+#        uses: docker/build-push-action@v1
+#        with:
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#          registry: docker.pkg.github.com
+#          repository: ckmuun/blumhuegel/
+#          tag_with_sha: true
+#          tag_with_ref: true
 
 
 
