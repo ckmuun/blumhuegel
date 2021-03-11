@@ -19,6 +19,13 @@ jobs:
       # run this external shell script to demonstrate the basic principle
       - run: sh scripts/external-sh-hello.sh
 
+      - run: cd datagen-cord
+      - run: ls
+      - run: cd ..
+      - run: ls
+
+
+      - run: echo "now executing tests for submodules"
       - run: cd datagen-cord && sh ../scripts/test-go-module.sh
       - run: cd finnhub-datagen && sh ../scripts/test-go-module.sh
       - run: cd alphavantage-datagen && sh ../scripts/test-go-module.sh
@@ -29,9 +36,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: ls
-      - run: cd ./datagen-cord
+      - run: cd datagen-cord && ls 
       - run: ls
-      - run: docker build -f ./datagen-cord/Dockerfile
+      #- run: docker build -f ./datagen-cord/Dockerfile
       - uses: VaultVulp/gp-docker-action@1.1.7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
