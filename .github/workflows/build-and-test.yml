@@ -27,12 +27,13 @@ jobs:
   publish-latest:
     runs-on: ubuntu-latest
     steps:
+      - run: ls
       - uses: VaultVulp/gp-docker-action@1.1.7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           image-name: datagen-cord
           image-tag: canary
-          build-context: ./datagen-cord/Dockerfile
+          build-context: datagen-cord/Dockerfile
 
 
 
