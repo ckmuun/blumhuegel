@@ -25,6 +25,9 @@ jobs:
       - run: ls
 
 
+      - run: cd datagen-cord && ls
+
+
       - run: echo "now executing tests for submodules"
       - run: cd datagen-cord && sh ../scripts/test-go-module.sh
       - run: cd finnhub-datagen && sh ../scripts/test-go-module.sh
