@@ -40,7 +40,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           image-name: datagen-cord
           image-tag: canary
-          dockerfile: ./datagen-cord/Dockerfile
+          dockerfile: Dockerfile
           # build-context: datagen-cord
           build-folder: datagen-cord
 
