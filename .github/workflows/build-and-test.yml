@@ -1,5 +1,7 @@
 # build and test golang services
 
+# TODO somehow we need to separate this into unit and integration / e2e tests. the e2e tests all fail by definition
+
 name: build-and-test
 
 on: [push]
