@@ -23,13 +23,20 @@ func NormalizeAssetSymbols(raw []AssetSymbol) []AssetSymbol {
 // helper method
 func trimToLowerCase(symbol AssetSymbol) AssetSymbol {
 
-	symbol.AssetType = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.AssetType, " ", "-")))
-	symbol.DisplaySymbol = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.DisplaySymbol, " ", "-")))
-	symbol.Description = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.Description, " ", "-")))
-	symbol.Figi = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.Figi, " ", "-")))
-	symbol.Mic = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.Mic, " ", "-")))
-	symbol.Currency = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.Currency, " ", "-")))
-	symbol.Symbol = s.TrimSpace(s.ToLower(s.ReplaceAll(symbol.Symbol, " ", "-")))
+	symbol.AssetType = trimSingleString(symbol.AssetType)
+	symbol.DisplaySymbol = trimSingleString(symbol.DisplaySymbol)
+	symbol.Description = trimSingleString(symbol.Description)
+	symbol.Figi = trimSingleString(symbol.Figi)
+	symbol.Mic = trimSingleString(symbol.Mic)
+	symbol.Currency = trimSingleString(symbol.Currency)
+	symbol.Symbol = trimSingleString(symbol.Symbol)
 
 	return symbol
+}
+
+func trimSingleString(stringToTrim string) string {
+
+	stringToTrim = s.ToLower(stringToTrim)
+	stringToTrim = s.TrimSpace(stringToTrim)
+	return s.ReplaceAll(stringToTrim, " ", "-")
 }
