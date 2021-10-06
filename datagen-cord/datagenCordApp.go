@@ -29,7 +29,7 @@ func main() {
 	symbols[usExchangeShorthand] = GetFinnhubSymbolsAsArr(usExchangeShorthand)
 
 	router := setupRouter()
-	router.Run(":7077")
+	_ = router.Run(":7077")
 }
 
 func setupRouter() *gin.Engine {
