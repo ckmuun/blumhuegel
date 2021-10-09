@@ -37,3 +37,6 @@ nb-configuration.xml
 
 # Local environment
 .env
+/unifier-tf/src/test/resources/nasdaq-fundamentals/
+/unifier-tf/src/test/resources/nasdaq-historical/
+/unifier-tf/src/test/resources/tweets-nasdaq/
