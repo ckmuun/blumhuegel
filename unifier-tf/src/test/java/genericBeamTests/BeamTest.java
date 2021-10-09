@@ -1,4 +1,4 @@
-package beam;
+package genericBeamTests;
 
 import de.koware.blumhuegel.transformers.SimpleTokenizerFn;
 import io.quarkus.test.junit.QuarkusTest;
