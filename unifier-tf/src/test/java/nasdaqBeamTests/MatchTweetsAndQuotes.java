@@ -1,22 +1,14 @@
 package nasdaqBeamTests;
 
-import de.koware.blumhuegel.transformers.RowBuilder;
-import de.koware.blumhuegel.transformers.SimpleRowBuilder;
+import de.koware.blumhuegel.transformers.CsvRowBuilder;
 import io.quarkus.test.junit.QuarkusTest;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.coders.RowCoder;
-import org.apache.beam.sdk.io.Compression;
-import org.apache.beam.sdk.io.FileIO;
 import org.apache.beam.sdk.io.TextIO;
-import org.apache.beam.sdk.io.fs.EmptyMatchTreatment;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
-import org.apache.beam.sdk.schemas.AutoValueSchema;
 import org.apache.beam.sdk.schemas.Schema;
-import org.apache.beam.sdk.state.State;
-import org.apache.beam.sdk.transforms.Create;
-import org.apache.beam.sdk.transforms.JsonToRow;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
@@ -28,10 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.SimpleHelperFns;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.MatchResult;
 
 @QuarkusTest
 public class MatchTweetsAndQuotes {
@@ -44,6 +34,7 @@ public class MatchTweetsAndQuotes {
             Schema.Field.of("company", Schema.FieldType.STRING),
             Schema.Field.of("ticker", Schema.FieldType.STRING),
             Schema.Field.of("indicator", Schema.FieldType.STRING),
+            Schema.Field.of("currency", Schema.FieldType.STRING),
             Schema.Field.of("amount", Schema.FieldType.STRING)
     );
 
@@ -117,7 +108,7 @@ public class MatchTweetsAndQuotes {
         PCollection<Row> rows = pipeline.apply(
                 "Read CSV", TextIO.read().from("src/test/resources/nasdaq-fundamentals/fundamentals_dataset.csv")
         ).apply(
-                ParDo.of(new RowBuilder(fundamentalsSchema))
+                ParDo.of(new CsvRowBuilder(fundamentalsSchema))
 
         )
                 .setCoder(RowCoder.of(fundamentalsSchema));
