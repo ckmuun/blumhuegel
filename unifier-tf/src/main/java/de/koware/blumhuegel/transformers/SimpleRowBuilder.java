@@ -34,7 +34,6 @@ public class SimpleRowBuilder extends DoFn<List<?>, Row> {
                 Schema.Field.of("amount", Schema.FieldType.STRING)
         );
 
-
         out.output(
                 Row.withSchema(fundamentalsSchema)
                         .addArray(
@@ -42,5 +41,6 @@ public class SimpleRowBuilder extends DoFn<List<?>, Row> {
                 ).build()
         );
     }
+
 
 }

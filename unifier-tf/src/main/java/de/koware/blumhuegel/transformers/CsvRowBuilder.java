@@ -23,16 +23,18 @@ public class CsvRowBuilder extends DoFn<String, Row> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CsvRowBuilder.class);
 
     private final Schema rowSchema;
+    private final char delimiter;
 
-    public CsvRowBuilder(Schema rowSchema) {
+    public CsvRowBuilder(Schema rowSchema, char delimiter) {
         this.rowSchema = rowSchema;
+        this.delimiter = delimiter;
     }
 
     @ProcessElement
     public void processElement(@Element String record, OutputReceiver<Row> out) {
         LOGGER.trace("creating row out of record: {}", record);
 
-        CSVRecord csvRecord = separateCsvRecord(record);
+        CSVRecord csvRecord = separateCsvRecord(record, delimiter);
 
         if (null == csvRecord) {
             out.output(null);
@@ -59,9 +61,9 @@ public class CsvRowBuilder extends DoFn<String, Row> {
         return schemaValues;
     }
 
-    private CSVRecord separateCsvRecord(String record) {
+    private CSVRecord separateCsvRecord(String record, char delimiter) {
         StringReader stringReader = new StringReader(record);
-        CSVFormat format = CSVFormat.newFormat(',');
+        CSVFormat format = CSVFormat.newFormat(delimiter);
 
         try {
 
@@ -73,7 +75,6 @@ public class CsvRowBuilder extends DoFn<String, Row> {
             ioe.printStackTrace();
         }
 
-        // TODO Check apache beam error handling philosophy (e.g. null tolerance)
         return null;
     }
 }

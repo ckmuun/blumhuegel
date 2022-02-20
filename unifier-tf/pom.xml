@@ -16,6 +16,7 @@
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>2.2.3.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    <beam.version>2.33.0</beam.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -53,14 +54,34 @@
     <dependency>
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-sdks-java-core</artifactId>
-      <version>2.32.0</version>
+      <version>${beam.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-runners-direct-java</artifactId>
-      <version>2.32.0</version>
+      <version>${beam.version}</version>
       <scope>runtime</scope>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.beam/beam-model-pipeline -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-model-pipeline</artifactId>
+      <version>${beam.version}</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.beam/beam-sdks-java-extensions-sql-udf -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-extensions-sql-udf</artifactId>
+      <version>${beam.version}</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.beam/beam-sdks-java-extensions-sql -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-extensions-sql</artifactId>
+      <version>${beam.version}</version>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
     <dependency>
       <groupId>org.apache.commons</groupId>
